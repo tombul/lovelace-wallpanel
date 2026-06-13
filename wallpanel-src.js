@@ -75,6 +75,7 @@ const defaultConfig = {
 	exclude_media_orientation: "", // Exclude media items with this orientation (landscape / portrait / auto)
 	image_background: "color", // color / image
 	video_loop: false,
+	video_loop_max_count: 0,
 	video_volume: 0.0,
 	video_play_to_end: false,
 	touch_zone_size_next_image: 15,
@@ -2095,6 +2096,8 @@ function initWallpanel() {
 			 **/
 			if (mediaElement.play_to_end && !mediaElement.loop) {
 				this.displayTime = mediaElement.duration;
+			} else if (mediaElement.loop && mediaElement.loop_max_count > 0) {
+				this.displayTime = Math.floor(mediaElement.duration * mediaElement.loop_max_count);
 			} else {
 				this.displayTime = displayTime;
 			}
@@ -3826,6 +3829,7 @@ function initWallpanel() {
 
 			videoElement.loop = config.video_loop && videoElement.duration < config.display_time;
 			videoElement.play_to_end = config.video_play_to_end;
+			videoElement.loop_max_count = config.video_loop_max_count;
 			this.setDisplayTime();
 			if (!videoElement.loop && !videoElement._wp_video_playback_listeners) {
 				// Immediately switch to next image at the end of the playback.
